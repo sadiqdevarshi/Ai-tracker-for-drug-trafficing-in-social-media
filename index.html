@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DrugDetect AI Platform</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --primary: #3b82f6;
+            --secondary: #64748b;
+            --accent: #8b5cf6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.5;
+        }
+
+        .dashboard {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .title-gradient {
+            background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 2.5rem;
+            font-weight: 800;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+        }
+
+        .alert-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .alert-table th {
+            text-align: left;
+            color: var(--text-muted);
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .alert-table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .risk-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .risk-high {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+            border: 1px solid var(--danger);
+        }
+
+        .risk-medium {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+            border: 1px solid var(--warning);
+        }
+
+        .risk-low {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        .platform-badge {
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        .status-pill {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--bg-card);
+            padding: 0.75rem 1.5rem;
+            border-radius: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #10b981;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.4;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border-radius: 1rem;
+            padding: 2rem;
+            max-width: 700px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: color 0.2s;
+        }
+
+        .modal-close:hover {
+            color: var(--text-main);
+        }
+
+        .detail-row {
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .detail-label {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .detail-value {
+            color: var(--text-main);
+            font-size: 1rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-confirm {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-confirm:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+        }
+
+        .btn-dismiss {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-dismiss:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #475569;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const App = () => {
+            const [alerts, setAlerts] = useState([]);
+            const [stats, setStats] = useState({
+                total_processed: 0,
+                high_risk_alerts: 0,
+                platform_distribution: { Telegram: 0, Instagram: 0 }
+            });
+            const [backendStatus, setBackendStatus] = useState('Checking...');
+            const [lastUpdate, setLastUpdate] = useState(new Date());
+            const [apiEndpoint] = useState('http://localhost:8000');
+            const [selectedAlert, setSelectedAlert] = useState(null);
+            const [showModal, setShowModal] = useState(false);
+
+            const fetchData = async () => {
+                try {
+                    const [alertsRes, statsRes, healthRes] = await Promise.all([
+                        fetch(`${apiEndpoint}/alerts`),
+                        fetch(`${apiEndpoint}/stats`),
+                        fetch(`${apiEndpoint}/health`)
+                    ]);
+                    if (alertsRes.ok && statsRes.ok && healthRes.ok) {
+                        setAlerts(await alertsRes.json());
+                        setStats(await statsRes.json());
+                        setBackendStatus('Live');
+                        setLastUpdate(new Date());
+                    } else {
+                        setBackendStatus('Error');
+                    }
+                } catch (error) {
+                    console.error("Backend unreachable:", error);
+                    setBackendStatus('Disconnected');
+                }
+            };
+
+            useEffect(() => {
+                fetchData();
+                const interval = setInterval(fetchData, 3000);
+                return () => clearInterval(interval);
+            }, []);
+
+            const handleReviewClick = (alert) => {
+                setSelectedAlert(alert);
+                setShowModal(true);
+            };
+
+            const handleCloseModal = () => {
+                setShowModal(false);
+                setSelectedAlert(null);
+            };
+
+            const handleConfirmAlert = async () => {
+                if (selectedAlert) {
+                    alert(`Alert ${selectedAlert.id} marked as CONFIRMED\nThis would trigger law enforcement notification in production.`);
+                    handleCloseModal();
+                }
+            };
+
+            const handleDismissAlert = async () => {
+                if (selectedAlert) {
+                    alert(`Alert ${selectedAlert.id} marked as DISMISSED\nLogged as false positive for model improvement.`);
+                    handleCloseModal();
+                }
+            };
+
+            return (
+                <div className="dashboard">
+                    <header>
+                        <div>
+                            <h1 className="title-gradient">DrugDetect AI</h1>
+                            <p style={{ color: 'var(--text-muted)' }}>Real-time public social media monitoring platform</p>
+                            <p style={{ color: 'var(--text-muted)', fontSize: '0.75rem', marginTop: '0.5rem' }}>
+                                Backend API: <code style={{ background: 'rgba(255,255,255,0.1)', padding: '2px 6px', borderRadius: '4px' }}>{apiEndpoint}</code>
+                            </p>
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', alignItems: 'flex-end' }}>
+                            <div className="status-pill">
+                                <div className="dot" style={{ backgroundColor: backendStatus === 'Live' ? '#10b981' : '#ef4444' }}></div>
+                                <span style={{ fontSize: '0.9rem', fontWeight: 500 }}>System: {backendStatus}</span>
+                            </div>
+                            {backendStatus === 'Live' && (
+                                <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
+                                    Last update: {lastUpdate.toLocaleTimeString()}
+                                </span>
+                            )}
+                        </div>
+                    </header>
+
+                    <div className="stats-grid">
+                        <div className="card">
+                            <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>Total Processed</p>
+                            <div style={{ fontSize: '2rem', fontWeight: 700 }}>{stats.total_processed}</div>
+                        </div>
+                        <div className="card">
+                            <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>High Risk Alerts</p>
+                            <div style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--danger)' }}>{stats.high_risk_alerts}</div>
+                        </div>
+                        <div className="card">
+                            <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>Telegram Signals</p>
+                            <div style={{ fontSize: '2rem', fontWeight: 700 }}>{stats.platform_distribution.Telegram}</div>
+                        </div>
+                        <div className="card">
+                            <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>Instagram Signals</p>
+                            <div style={{ fontSize: '2rem', fontWeight: 700 }}>{stats.platform_distribution.Instagram}</div>
+                        </div>
+                    </div>
+
+                    <div className="card" style={{ flex: 1 }}>
+                        <h2 style={{ marginBottom: '1rem' }}>Active Intelligence Alerts</h2>
+                        <table className="alert-table">
+                            <thead>
+                                <tr>
+                                    <th>Platform</th>
+                                    <th>Content Snippet</th>
+                                    <th>Risk Analysis</th>
+                                    <th>Action</th>
+                                    <th>Flags</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {alerts.length > 0 ? alerts.map((alert) => (
+                                    <tr key={alert.id}>
+                                        <td><span className="platform-badge">{alert.platform}</span></td>
+                                        <td style={{ maxWidth: '300px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                            {alert.content_preview}
+                                        </td>
+                                        <td>
+                                            <span className={`risk-badge risk-${alert.risk_score.level.toLowerCase()}`}>
+                                                {alert.risk_score.score}% {alert.risk_score.level}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <button
+                                                onClick={() => handleReviewClick(alert)}
+                                                style={{
+                                                    background: 'var(--primary)',
+                                                    border: 'none',
+                                                    color: 'white',
+                                                    padding: '0.4rem 0.8rem',
+                                                    borderRadius: '6px',
+                                                    cursor: 'pointer',
+                                                    fontSize: '0.8rem'
+                                                }}>Review</button>
+                                        </td>
+                                        <td style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                                            {alert.risk_score.reasoning[0]}
+                                        </td>
+                                    </tr>
+                                )) : (
+                                    <tr>
+                                        <td colSpan="5" style={{ textAlign: 'center', padding: '4rem', color: 'var(--text-muted)' }}>
+                                            {backendStatus === 'Disconnected' ? 'Connect to backend to start monitoring...' : 'Monitoring social signals...'}
+                                        </td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <footer style={{
+                        marginTop: '2rem',
+                        padding: '1.5rem',
+                        borderTop: '1px solid rgba(255,255,255,0.1)',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        fontSize: '0.8rem',
+                        color: 'var(--text-muted)'
+                    }}>
+                        <div>
+                            <strong>Active API Endpoints:</strong>
+                            <div style={{ marginTop: '0.5rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                                <span>✓ GET /alerts</span>
+                                <span>✓ GET /stats</span>
+                                <span>✓ GET /health</span>
+                                <span>✓ POST /posts/ingest</span>
+                            </div>
+                        </div>
+                        <div style={{ textAlign: 'right' }}>
+                            <div>Total Posts: <strong>{stats.total_processed}</strong></div>
+                            <div>High Risk: <strong style={{ color: 'var(--danger)' }}>{stats.high_risk_alerts}</strong></div>
+                        </div>
+                    </footer>
+
+                    {/* Review Modal */}
+                    {showModal && selectedAlert && (
+                        <div className="modal-overlay" onClick={handleCloseModal}>
+                            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                                <div className="modal-header">
+                                    <h2 style={{ margin: 0 }}>Alert Review - Human Verification</h2>
+                                    <button className="modal-close" onClick={handleCloseModal}>×</button>
+                                </div>
+
+                                <div className="detail-row">
+                                    <div className="detail-label">Alert ID</div>
+                                    <div className="detail-value"><code>{selectedAlert.id}</code></div>
+                                </div>
+
+                                <div className="detail-row">
+                                    <div className="detail-label">Platform</div>
+                                    <div className="detail-value">
+                                        <span className="platform-badge">{selectedAlert.platform}</span>
+                                    </div>
+                                </div>
+
+                                <div className="detail-row">
+                                    <div className="detail-label">Full Content</div>
+                                    <div className="detail-value" style={{
+                                        background: 'rgba(255,255,255,0.05)',
+                                        padding: '1rem',
+                                        borderRadius: '0.5rem',
+                                        fontFamily: 'monospace',
+                                        fontSize: '0.9rem'
+                                    }}>
+                                        {selectedAlert.content_preview}
+                                    </div>
+                                </div>
+
+                                <div className="detail-row">
+                                    <div className="detail-label">Risk Assessment</div>
+                                    <div className="detail-value">
+                                        <span className={`risk-badge risk-${selectedAlert.risk_score.level.toLowerCase()}`} style={{ fontSize: '1rem', padding: '0.5rem 1rem' }}>
+                                            {selectedAlert.risk_score.score}% {selectedAlert.risk_score.level}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div className="detail-row">
+                                    <div className="detail-label">AI Confidence Breakdown</div>
+                                    <div className="detail-value">
+                                        <div style={{ marginBottom: '0.5rem' }}>📝 NLP Confidence: <strong>{(selectedAlert.risk_score.nlp_confidence * 100).toFixed(1)}%</strong></div>
+                                        <div style={{ marginBottom: '0.5rem' }}>🖼️ Image Confidence: <strong>{(selectedAlert.risk_score.image_confidence * 100).toFixed(1)}%</strong></div>
+                                        <div>📊 Behavioral Score: <strong>{selectedAlert.risk_score.behavioral_score.toFixed(1)}</strong></div>
+                                    </div>
+                                </div>
+
+                                <div className="detail-row">
+                                    <div className="detail-label">AI Reasoning</div>
+                                    <div className="detail-value">
+                                        {selectedAlert.risk_score.reasoning.map((reason, idx) => (
+                                            <div key={idx} style={{
+                                                background: 'rgba(59, 130, 246, 0.1)',
+                                                padding: '0.75rem',
+                                                borderRadius: '0.5rem',
+                                                marginBottom: '0.5rem',
+                                                borderLeft: '3px solid var(--primary)'
+                                            }}>
+                                                • {reason}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <div className="detail-row" style={{ border: 'none' }}>
+                                    <div className="detail-label">Status</div>
+                                    <div className="detail-value">
+                                        <span style={{
+                                            background: 'rgba(245, 158, 11, 0.2)',
+                                            color: 'var(--warning)',
+                                            padding: '0.25rem 0.75rem',
+                                            borderRadius: '9999px',
+                                            fontSize: '0.85rem',
+                                            fontWeight: 600
+                                        }}>
+                                            {selectedAlert.status}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div className="action-buttons">
+                                    <button className="btn btn-confirm" onClick={handleConfirmAlert}>
+                                        🚨 Confirm Threat
+                                    </button>
+                                    <button className="btn btn-dismiss" onClick={handleDismissAlert}>
+                                        ✓ Dismiss as Safe
+                                    </button>
+                                    <button className="btn btn-secondary" onClick={handleCloseModal}>
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+
+</html>
