@@ -54,6 +54,24 @@ async def health_check():
 
 @app.post("/posts/ingest", response_model=Alert)
 async def ingest_post(post: Post):
+    # DEDUPLICATION: Check if this content was already processed
+    if posts_col is not None:
+        existing = posts_col.find_one({"content": post.content})
+        if existing:
+            # Return the existing alert if we've already seen this content
+            alert_data = alerts_col.find_one({"post_id": existing["id"]})
+            if alert_data:
+                # Map _id if needed, Pydantic model Alert will handle it
+                return alert_data
+            raise HTTPException(status_code=400, detail="Post handled but alert missing")
+    else:
+        # Memory fallback check
+        for p in db_memory["posts"]:
+            if p.content == post.content:
+                for a in db_memory["alerts"]:
+                    if a.post_id == p.id:
+                        return a
+
     post.id = str(uuid.uuid4())
     
     if posts_col is not None:

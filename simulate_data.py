@@ -195,18 +195,27 @@ SAMPLES = [
 ]
 
 def simulate():
-    print("Starting simulation... (Ensure backend is running at http://localhost:8000)")
-    while True:
-        sample = random.choice(SAMPLES)
+    print("Starting simulation... (Ensure backend is running)")
+    
+    # Shuffle samples to ensure variety and uniqueness in the sequence
+    shuffled_samples = list(SAMPLES)
+    random.shuffle(shuffled_samples)
+    
+    for sample in shuffled_samples:
         try:
             resp = requests.post(API_URL, json=sample)
             if resp.status_code == 200:
                 alert = resp.json()
                 print(f"Ingested: {sample['platform']} - Risk: {alert['risk_score']['score']}% ({alert['risk_score']['level']})")
+            else:
+                print(f"Failed to ingest: {resp.status_code}")
         except Exception as e:
             print(f"Error connecting to backend: {e}")
         
-        time.sleep(5)
+        # Fast ingest for demo purposes
+        time.sleep(2) 
+
+    print("\n✅ All unique samples processed. Simulation cycle complete.")
 
 if __name__ == "__main__":
     simulate()
