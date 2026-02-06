@@ -94,8 +94,10 @@ async def ingest_post(post: Post):
     
     if posts_col is not None:
         posts_col.insert_one(post.dict(by_alias=True))
+        logger.info(f"Ingested post to MongoDB: {post.id}")
     else:
         db_memory["posts"].append(post)
+        logger.info(f"Ingested post to Memory: {post.id}")
     
     # Process with AI Engine
     risk = ai_engine.calculate_risk(post.content, post.image_url)
@@ -111,8 +113,10 @@ async def ingest_post(post: Post):
     
     if alerts_col is not None:
         alerts_col.insert_one(alert.dict(by_alias=True))
+        logger.info(f"Created alert in MongoDB: {alert.id}")
     else:
         db_memory["alerts"].append(alert)
+        logger.info(f"Created alert in Memory: {alert.id}")
         
     return alert
 

@@ -1,8 +1,10 @@
+import os
 import requests
 import time
 import random
 
-API_URL = "http://localhost:8000/posts/ingest"
+# Allow overriding the API URL via environment variable for Render deployment
+API_URL = os.getenv("API_URL", "http://localhost:8000/posts/ingest")
 
 SAMPLES = [
     # HIGH RISK - Pharmaceutical diverstion
