@@ -90,26 +90,28 @@ async def ingest_post(post: Post):
                     if a.post_id == p.id:
                         return a
 
-    post.id = str(uuid.uuid4())
+    # Create Post with explicit _id for Pydantic alias mapping
+    post_data = post.dict(exclude={"id"})
+    new_post = Post(_id=str(uuid.uuid4()), **post_data)
     
     if posts_col is not None:
         # Insert using dict with _id
-        posts_col.insert_one(post.dict(by_alias=True))
-        logger.info(f"Ingested post to MongoDB: {post.id}")
+        posts_col.insert_one(new_post.dict(by_alias=True))
+        logger.info(f"Ingested post to MongoDB: {new_post.id}")
     else:
-        db_memory["posts"].append(post)
-        logger.info(f"Ingested post to Memory: {post.id}")
+        db_memory["posts"].append(new_post)
+        logger.info(f"Ingested post to Memory: {new_post.id}")
     
     # Process with AI Engine
-    risk = ai_engine.calculate_risk(post.content, post.image_url)
+    risk = ai_engine.calculate_risk(new_post.content, new_post.image_url)
     
-    # Create Alert
+    # Create Alert with explicit _id
     alert = Alert(
-        id=str(uuid.uuid4()),
-        post_id=post.id,
+        _id=str(uuid.uuid4()),
+        post_id=new_post.id,
         risk_score=risk,
-        platform=post.platform,
-        content_preview=post.content[:100] + "..." if len(post.content) > 100 else post.content
+        platform=new_post.platform,
+        content_preview=new_post.content[:100] + "..." if len(new_post.content) > 100 else new_post.content
     )
     
     if alerts_col is not None:
