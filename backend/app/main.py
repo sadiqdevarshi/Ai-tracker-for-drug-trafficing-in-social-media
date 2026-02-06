@@ -10,17 +10,35 @@ from fastapi.responses import FileResponse
 from .models import Post, Alert, RiskScore
 from .services import ai_engine
 
+import logging
+
+# Configure logging to see errors in Render logs
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 app = FastAPI(title="DrugDetect AI API")
 
 @app.get("/")
 async def serve_index():
-    # Return index.html from the repository root
-    # Structure: root/backend/app/main.py -> root/index.html
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    index_path = os.path.normpath(os.path.join(current_dir, "..", "..", "index.html"))
-    if os.path.exists(index_path):
-        return FileResponse(index_path)
-    return {"error": "Dashboard index.html not found"}
+    try:
+        # Try multiple potential paths for index.html
+        base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        paths_to_check = [
+            os.path.join(base_dir, "index.html"),
+            "index.html",
+            "/opt/render/project/src/index.html"
+        ]
+        
+        for index_path in paths_to_check:
+            if os.path.exists(index_path):
+                logger.info(f"Serving index from: {index_path}")
+                return FileResponse(index_path)
+                
+        logger.error("index.html not found in any expected location")
+        return {"error": "Dashboard index.html not found", "checked_paths": paths_to_check}
+    except Exception as e:
+        logger.error(f"Error serving index: {e}")
+        return {"error": str(e)}
 
 # Enable CORS for frontend connection
 app.add_middleware(
