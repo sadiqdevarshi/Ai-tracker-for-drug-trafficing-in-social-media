@@ -6,10 +6,21 @@ import uuid
 from datetime import datetime
 from pymongo import MongoClient
 
+from fastapi.responses import FileResponse
 from .models import Post, Alert, RiskScore
 from .services import ai_engine
 
 app = FastAPI(title="DrugDetect AI API")
+
+@app.get("/")
+async def serve_index():
+    # Return index.html from the repository root
+    # Structure: root/backend/app/main.py -> root/index.html
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    index_path = os.path.normpath(os.path.join(current_dir, "..", "..", "index.html"))
+    if os.path.exists(index_path):
+        return FileResponse(index_path)
+    return {"error": "Dashboard index.html not found"}
 
 # Enable CORS for frontend connection
 app.add_middleware(

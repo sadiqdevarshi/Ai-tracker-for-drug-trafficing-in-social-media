@@ -289,7 +289,11 @@
             });
             const [backendStatus, setBackendStatus] = useState('Checking...');
             const [lastUpdate, setLastUpdate] = useState(new Date());
-            const [apiEndpoint] = useState('http://localhost:8000');
+            const [apiEndpoint] = useState(
+                window.location.protocol === 'file:'
+                    ? 'http://localhost:8000'
+                    : window.location.origin
+            );
             const [selectedAlert, setSelectedAlert] = useState(null);
             const [showModal, setShowModal] = useState(false);
 
