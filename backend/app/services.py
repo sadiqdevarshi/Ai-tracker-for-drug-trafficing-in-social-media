@@ -5,10 +5,15 @@ from .models import RiskScore
 
 class AIEngine:
     def __init__(self):
-        # Sample keywords associated with drug trafficking for the mockup
+        # Expanded keywords associated with drug trafficking and suspicious behavior
         self.trigger_keywords = [
             "ice", "crystal", "meth", "pill", "delivery", "shipping", 
-            "discrete", "telegram me", "wickr", "plug", "stash"
+            "discrete", "telegram me", "wickr", "plug", "stash",
+            "xanax", "adderall", "oxy", "coke", "snow", "white",
+            "green", "herb", "bud", "fast shipping", "overnight",
+            "direct message", "private deal", "unmarked", "fent",
+            "perc", "bars", "stamps", "bricks", "weight", "oz",
+            "gram", "wholesale"
         ]
 
     def classify_intent(self, text: str) -> Dict:

@@ -5,152 +5,99 @@ import random
 API_URL = "http://localhost:8000/posts/ingest"
 
 SAMPLES = [
-    # HIGH RISK - Multiple drug keywords + delivery terms
-    {
-        "platform": "Telegram",
-        "content": "New stock of ICE available. High quality crystal. Delivery anywhere in the city. DM for prices.",
-        "author_id": "user_123",
-        "image_url": "http://example.com/suspicious_pills.jpg"
-    },
-    {
-        "platform": "Telegram",
-        "content": "Premium meth crystal in stock. Discrete shipping worldwide. Telegram me for samples. Fast delivery guaranteed.",
-        "author_id": "user_dealer_01",
-        "image_url": "http://example.com/drug_package.jpg"
-    },
+    # HIGH RISK - Pharmaceutical diverstion
     {
         "platform": "Instagram",
-        "content": "Got the best ice and pills in town 💎 Delivery 24/7. DM for wickr contact. Discrete packaging guaranteed.",
-        "author_id": "supplier_99",
-        "image_url": "http://example.com/suspicious_pills.jpg"
+        "content": "Xanax bars and Adderall 30mg available. Genuine pharmaceutical grade. Overnight shipping 📦 DM for menu and wickr.",
+        "author_id": "pharma_connect",
+        "image_url": "http://example.com/pharmacy_bottles.png"
     },
     {
         "platform": "Telegram",
-        "content": "Crystal meth available now. High purity. Shipping to all locations. Contact my plug for stash details.",
-        "author_id": "vendor_xyz",
-        "image_url": "http://example.com/drug_stash.jpg"
+        "content": "OxyContin 80mg / Percocet in stock now. Bulk deals available. Discrete delivery worldwide 🌍 Telegram @med_plug",
+        "author_id": "pill_supplier_pro"
     },
-    
-    # MEDIUM RISK - Some suspicious keywords but less obvious
+
+    # HIGH RISK - Street Slang 
     {
         "platform": "Telegram",
-        "content": "Looking for a plug for some discrete shipping. Need pills ASAP.",
-        "author_id": "user_789"
+        "content": "Top shelf snow ❄️ available. Pure white. Fast delivery within the city. Hit up the plug for stash location.",
+        "author_id": "snow_man_88"
     },
     {
         "platform": "Instagram",
-        "content": "Anyone know where to get good stuff? Need delivery service. DM me if you can help.",
-        "author_id": "seeker_123"
+        "content": "Fresh green 🥦 and loud 🔊 vibes only. High quality bud. DM for delivery options. Serious buyers only.",
+        "author_id": "vibes_daily"
     },
+
+    # MEDIUM RISK - Suspicious commerce
     {
         "platform": "Telegram",
-        "content": "Need a reliable plug in the area. Looking for discrete transactions. Hit me up on wickr.",
-        "author_id": "buyer_456"
+        "content": "Need someone who can handle unmarked shipping. Looking for a long term partner for wholesale. DM now.",
+        "author_id": "biz_dev_dark"
     },
     {
         "platform": "Instagram",
-        "content": "Selling special party supplies 🎉 Fast shipping available. Telegram for details.",
-        "author_id": "party_vendor"
+        "content": "Special private deal today only 💎 Everything must go. Fast shipping anywhere. Check bio link for contact.",
+        "author_id": "exclusive_deals_01"
     },
-    {
-        "platform": "Telegram",
-        "content": "Got what you need. Discrete and fast. Message me for the stash location.",
-        "author_id": "connect_789"
-    },
-    
-    # LOW RISK - Normal social media content
+
+    # LOW RISK - Educational/Medical (False positive testing)
     {
         "platform": "Instagram",
-        "content": "Just hanging out at the beach! #summer #vibes",
-        "author_id": "user_456",
-        "image_url": "http://example.com/beach.jpg"
-    },
-    {
-        "platform": "Instagram",
-        "content": "Check out these new vitamin supplements I found! #health #vitamins",
-        "author_id": "user_000",
-        "image_url": "http://example.com/vitamins.jpg"
-    },
-    {
-        "platform": "Instagram",
-        "content": "Beautiful sunset today 🌅 Feeling grateful! #nature #photography",
-        "author_id": "photographer_01"
+        "content": "Pharmacy students studying for exams today! Hard work pays off 📚 #medical #studentlife",
+        "author_id": "med_student_01",
+        "image_url": "http://example.com/books.jpg"
     },
     {
         "platform": "Telegram",
-        "content": "Anyone want to join our study group? We meet every Tuesday at the library.",
-        "author_id": "student_group"
+        "content": "Please remember to take your prescribed vitamins daily. Health is wealth! Join our wellness channel.",
+        "author_id": "health_facts"
     },
+
+    # LOW RISK - Regular Commerce
     {
         "platform": "Instagram",
-        "content": "New recipe alert! 🍕 Homemade pizza night with the family. #cooking #foodie",
-        "author_id": "chef_mom",
-        "image_url": "http://example.com/pizza.jpg"
+        "content": "Selling my collection of rare crystal stones 💎 DM for prices. Each piece is unique! #crystals #healing",
+        "author_id": "crystal_seller"
     },
     {
         "platform": "Telegram",
-        "content": "Selling my old laptop. Great condition, barely used. DM for price.",
-        "author_id": "tech_seller"
+        "content": "Flash sale on all laptops! Shipping included in the price. Check the list of specs below.",
+        "author_id": "tech_hub"
     },
-    {
-        "platform": "Instagram",
-        "content": "Morning workout done! 💪 Feeling energized. #fitness #motivation",
-        "author_id": "gym_enthusiast"
-    },
-    
-    # MEDIUM-HIGH RISK - Coded language
+
+    # HIGH RISK - Fentanyl references
     {
         "platform": "Telegram",
-        "content": "Fresh batch just arrived. Top quality product. Delivery available. Contact for samples.",
-        "author_id": "supplier_coded"
+        "content": "Fent patches and bricks available. High purity. Local pickup or discrete shipping. Safe transactions only.",
+        "author_id": "supplier_bulk"
+    },
+
+    # MEDIUM RISK - Coded language with emojis
+    {
+        "platform": "Instagram",
+        "content": "Got those 🍫 and 🍬 for the weekend party. DM for delivery. Limited stock left!",
+        "author_id": "party_host_00"
+    },
+
+    # LOW RISK - Nature/Art
+    {
+        "platform": "Instagram",
+        "content": "The snow on the mountains looks beautiful today! 🏔️ Wishing I was there. #winter #nature",
+        "author_id": "nature_lover"
     },
     {
         "platform": "Instagram",
-        "content": "Special items in stock 💎 Fast shipping. Serious inquiries only. Telegram in bio.",
-        "author_id": "vendor_coded"
+        "content": "New green art piece finished! 🎨 What do you think of the color palette? #artist #painting",
+        "author_id": "art_studio"
     },
-    
-    # HIGH RISK - Direct drug references
+
+    # HIGH RISK - Direct weight references
     {
         "platform": "Telegram",
-        "content": "Pure crystal available. Best prices in the city. Discrete delivery to your door. DM now.",
-        "author_id": "dealer_direct",
-        "image_url": "http://example.com/pill_bottle.jpg"
-    },
-    {
-        "platform": "Instagram",
-        "content": "Pills pills pills 💊 All types available. Shipping worldwide. Wickr: dealer420",
-        "author_id": "pill_vendor",
-        "image_url": "http://example.com/suspicious_pills.jpg"
-    },
-    
-    # LOW RISK - Business/Commerce
-    {
-        "platform": "Instagram",
-        "content": "New clothing collection dropping tomorrow! 👕 Free shipping on orders over $50. #fashion #sale",
-        "author_id": "clothing_store"
-    },
-    {
-        "platform": "Telegram",
-        "content": "Selling handmade jewelry. Custom orders welcome. Shipping available worldwide. Check my portfolio!",
-        "author_id": "jewelry_maker"
-    },
-    {
-        "platform": "Instagram",
-        "content": "Fresh organic vegetables from our farm 🥕🥬 Delivery available in the city. #organic #farmfresh",
-        "author_id": "local_farmer"
-    },
-    
-    # MEDIUM RISK - Ambiguous content
-    {
-        "platform": "Telegram",
-        "content": "Got the good stuff. Hit me up for details. Fast and discrete.",
-        "author_id": "ambiguous_01"
-    },
-    {
-        "platform": "Instagram",
-        "content": "Premium quality guaranteed. Delivery service available. DM for menu.",
-        "author_id": "ambiguous_02"
+        "content": "Selling by the oz or gram. Best quality meth stash. Direct message to get the location. No time wasters.",
+        "author_id": "bulk_dealer_pro"
     }
 ]
 
