@@ -16,11 +16,13 @@ const Dashboard = () => {
     return () => clearInterval(interval);
   }, []);
 
+  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+
   const fetchData = async () => {
     try {
       const [alertsRes, statsRes] = await Promise.all([
-        fetch('http://localhost:8000/alerts'),
-        fetch('http://localhost:8000/stats')
+        fetch(`${API_URL}/alerts`),
+        fetch(`${API_URL}/stats`)
       ]);
       const alertsData = await alertsRes.json();
       const statsData = await statsRes.json();
