@@ -13,7 +13,8 @@ class AIEngine:
             "green", "herb", "bud", "fast shipping", "overnight",
             "direct message", "private deal", "unmarked", "fent",
             "perc", "bars", "stamps", "bricks", "weight", "oz",
-            "gram", "wholesale"
+            "gram", "wholesale", "🍭", "🍬", "❄️", "🔌", "🍄",
+            "btc", "xmr", "monero", "crypto", "gear", "peng"
         ]
 
     def classify_intent(self, text: str) -> Dict:

@@ -77,11 +77,11 @@ async def ingest_post(post: Post):
         existing = posts_col.find_one({"content": post.content})
         if existing:
             # Return the existing alert if we've already seen this content
-            alert_data = alerts_col.find_one({"post_id": existing["id"]})
+            # PyMongo dicts use "_id"
+            alert_data = alerts_col.find_one({"post_id": existing["_id"]})
             if alert_data:
-                # Map _id if needed, Pydantic model Alert will handle it
                 return alert_data
-            raise HTTPException(status_code=400, detail="Post handled but alert missing")
+            # If post exists but alert doesn't, we continue to create it
     else:
         # Memory fallback check
         for p in db_memory["posts"]:
@@ -93,6 +93,7 @@ async def ingest_post(post: Post):
     post.id = str(uuid.uuid4())
     
     if posts_col is not None:
+        # Insert using dict with _id
         posts_col.insert_one(post.dict(by_alias=True))
         logger.info(f"Ingested post to MongoDB: {post.id}")
     else:
@@ -123,8 +124,12 @@ async def ingest_post(post: Post):
 @app.get("/alerts", response_model=List[Alert])
 async def get_alerts():
     if alerts_col is not None:
-        alerts = list(alerts_col.find().sort("risk_score.score", -1))
-        # Convert _id to id if necessary (handled by Pydantic usually)
+        # Fetch high-risk alerts first
+        cursor = alerts_col.find().sort("risk_score.score", -1)
+        alerts = []
+        for doc in cursor:
+            # Pydantic will map _id to id if populate_by_name is True
+            alerts.append(Alert(**doc))
         return alerts
     return sorted(db_memory["alerts"], key=lambda x: x.risk_score.score, reverse=True)
 
