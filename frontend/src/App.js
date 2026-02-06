@@ -34,17 +34,6 @@ const Dashboard = () => {
     }
   };
 
-  const handleReset = async () => {
-    if (window.confirm("Are you sure you want to clear all tracking data and start from zero?")) {
-      try {
-        await fetch(`${API_URL}/reset`, { method: 'POST' });
-        fetchData();
-      } catch (error) {
-        console.error("Error resetting data:", error);
-      }
-    }
-  };
-
   return (
     <div className="dashboard">
       <header>
@@ -53,13 +42,6 @@ const Dashboard = () => {
           <p style={{ color: 'var(--text-muted)' }}>Real-time public social media monitoring platform</p>
         </div>
         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-          <button
-            onClick={handleReset}
-            className="btn"
-            style={{ background: 'rgba(239, 68, 68, 0.1)', color: 'var(--danger)', border: '1px solid var(--danger)', padding: '0.5rem 1rem' }}
-          >
-            Reset Analysis
-          </button>
           <div className="card" style={{ padding: '0.75rem 1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <div style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: '#10b981' }}></div>
             <span style={{ fontSize: '0.9rem', fontWeight: 500 }}>System Live</span>

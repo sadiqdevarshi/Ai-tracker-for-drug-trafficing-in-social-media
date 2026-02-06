@@ -98,6 +98,99 @@ SAMPLES = [
         "platform": "Telegram",
         "content": "Selling by the oz or gram. Best quality meth stash. Direct message to get the location. No time wasters.",
         "author_id": "bulk_dealer_pro"
+    },
+
+    # NEW: UK Slang / Regional
+    {
+        "platform": "Telegram",
+        "content": "Peng gear ❄️ just landed. Banging white. 10/10 quality. Hit me up for the drop off 🚗💨 London based.",
+        "author_id": "ldn_plugs"
+    },
+    {
+        "platform": "Instagram",
+        "content": "Got those cali tins 🍧 and packs 📦 available. Top shelf flavors only. DM for the menu link.",
+        "author_id": "cali_import_uk"
+    },
+
+    # NEW: Coded Emojis / Gen Z Slang
+    {
+        "platform": "Instagram",
+        "content": "Anyone need some 🍭 or 🍬 for the rave tonight? 🕺 Active all night. Fast delivery. 🚀",
+        "author_id": "party_essentials_00"
+    },
+    {
+        "platform": "Telegram",
+        "content": "Need a reliable 🔌 for the 🍄? Taking orders now for the weekend trip. 🌈🚀",
+        "author_id": "trippy_vibes"
+    },
+
+    # NEW: Crypto-linked transactions
+    {
+        "platform": "Telegram",
+        "content": "All meds available. Accepting BTC/XMR for discrete transactions. 🔐 Verified vendor with 500+ reviews. DM for shop link.",
+        "author_id": "dark_market_vendor"
+    },
+
+    # NEW: Professional/Educational (Noise level)
+    {
+        "platform": "Instagram",
+        "content": "New research published on the effects of crystals in industrial engineering! 🔬🏗️ #science #engineering",
+        "author_id": "science_daily"
+    },
+    {
+        "platform": "Telegram",
+        "content": "Weekly pharmacy stock update: All standard medications and vitamins are back in inventory. Please visit your local clinic.",
+        "author_id": "health_ministry_official"
+    },
+
+    # NEW: More diverse pharmaceutical samples
+    {
+        "platform": "Telegram",
+        "content": "Valium / Diazepam / Klonopin in stock. 💊 Sealed blisters. Direct from factory. Worldwide discrete shipping.",
+        "author_id": "benzo_supply_chain"
+    },
+    {
+        "platform": "Instagram",
+        "content": "Codeine syrup 🍼 and prometh 🍇 in stock. Genuine sealed bottles. DM for prices while stock lasts.",
+        "author_id": "syrup_central"
+    },
+
+    # NEW: Normal social activity variations
+    {
+        "platform": "Instagram",
+        "content": "Walking through the green fields of Switzerland today. 🇨🇭 Peaceful and beautiful. #travel #nature",
+        "author_id": "globetrotter_jane"
+    },
+    {
+        "platform": "Telegram",
+        "content": "Selling my collection of vintage stamps. 📮 Collection date from 1920-1950. DM for catalog.",
+        "author_id": "stamp_collector_king"
+    },
+
+    # NEW: Suspicious but cleverly worded
+    {
+        "platform": "Instagram",
+        "content": "If you know, you know. 🤐 Everything you need for the perfect night. DM is open 24/7. #nightlife #vibes",
+        "author_id": "iykyk_anonymous"
+    },
+    {
+        "platform": "Telegram",
+        "content": "Moving locations. Clearing all old stash. Everything must go today. Cheap deals if you buy in weight. DM current location.",
+        "author_id": "clearance_sale_plugs"
+    },
+
+    # NEW: Regional Slang (US South)
+    {
+        "platform": "Instagram",
+        "content": "I got the best herb 🌿 in the dirty south. Big buds, no seeds. Pull up or hit my line for the drop.",
+        "author_id": "atl_herbalist"
+    },
+
+    # NEW: Normal Commerce
+    {
+        "platform": "Instagram",
+        "content": "New shipment of high-end white t-shirts just arrived! 👕 Minimalist design, pure cotton. Shop link in bio.",
+        "author_id": "minimalist_fashion"
     }
 ]
 
