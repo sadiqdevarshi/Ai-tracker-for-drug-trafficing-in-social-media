@@ -314,6 +314,22 @@
                 }
             };
 
+            const handleReset = async () => {
+                if (window.confirm("Are you sure you want to clear all tracking data and start from zero?")) {
+                    try {
+                        const res = await fetch(`${apiEndpoint}/reset`, { method: 'POST' });
+                        if (res.ok) {
+                            fetchData();
+                        } else {
+                            alert("Reset failed on server.");
+                        }
+                    } catch (error) {
+                        console.error("Error resetting data:", error);
+                        alert("Reset failed. Check if backend is running.");
+                    }
+                }
+            };
+
             useEffect(() => {
                 fetchData();
                 const interval = setInterval(fetchData, 3000);
@@ -355,9 +371,26 @@
                             </p>
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', alignItems: 'flex-end' }}>
-                            <div className="status-pill">
-                                <div className="dot" style={{ backgroundColor: backendStatus === 'Live' ? '#10b981' : '#ef4444' }}></div>
-                                <span style={{ fontSize: '0.9rem', fontWeight: 500 }}>System: {backendStatus}</span>
+                            <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                                <button
+                                    onClick={handleReset}
+                                    style={{
+                                        background: 'rgba(239, 68, 68, 0.1)',
+                                        color: 'var(--danger)',
+                                        border: '1px solid var(--danger)',
+                                        padding: '0.5rem 1rem',
+                                        borderRadius: '0.5rem',
+                                        cursor: 'pointer',
+                                        fontWeight: '600',
+                                        fontSize: '0.85rem'
+                                    }}
+                                >
+                                    Reset Analysis
+                                </button>
+                                <div className="status-pill">
+                                    <div className="dot" style={{ backgroundColor: backendStatus === 'Live' ? '#10b981' : '#ef4444' }}></div>
+                                    <span style={{ fontSize: '0.9rem', fontWeight: 500 }}>System: {backendStatus}</span>
+                                </div>
                             </div>
                             {backendStatus === 'Live' && (
                                 <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
@@ -455,6 +488,7 @@
                                 <span>✓ GET /stats</span>
                                 <span>✓ GET /health</span>
                                 <span>✓ POST /posts/ingest</span>
+                                <span>✓ POST /reset</span>
                             </div>
                         </div>
                         <div style={{ textAlign: 'right' }}>
