@@ -77,6 +77,16 @@ async def get_alerts():
         return alerts
     return sorted(db_memory["alerts"], key=lambda x: x.risk_score.score, reverse=True)
 
+@app.post("/reset")
+async def reset_data():
+    if posts_col is not None and alerts_col is not None:
+        posts_col.delete_many({})
+        alerts_col.delete_many({})
+    else:
+        db_memory["posts"] = []
+        db_memory["alerts"] = []
+    return {"message": "All tracking data has been reset to zero."}
+
 @app.get("/stats")
 async def get_stats():
     if posts_col is not None and alerts_col is not None:
