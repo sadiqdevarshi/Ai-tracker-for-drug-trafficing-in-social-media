@@ -195,27 +195,36 @@ SAMPLES = [
 ]
 
 def simulate():
-    print("Starting simulation... (Ensure backend is running)")
+    print(f"Starting infinite simulation... Target: {API_URL}")
+    print("Each cycle will shuffle the 40+ unique samples.")
     
-    # Shuffle samples to ensure variety and uniqueness in the sequence
-    shuffled_samples = list(SAMPLES)
-    random.shuffle(shuffled_samples)
-    
-    for sample in shuffled_samples:
-        try:
-            resp = requests.post(API_URL, json=sample)
-            if resp.status_code == 200:
-                alert = resp.json()
-                print(f"Ingested: {sample['platform']} - Risk: {alert['risk_score']['score']}% ({alert['risk_score']['level']})")
-            else:
-                print(f"Failed to ingest: {resp.status_code}")
-        except Exception as e:
-            print(f"Error connecting to backend: {e}")
+    cycle_count = 1
+    while True:
+        print(f"\n--- Starting Cycle {cycle_count} ---")
+        shuffled_samples = list(SAMPLES)
+        random.shuffle(shuffled_samples)
         
-        # Fast ingest for demo purposes
-        time.sleep(2) 
-
-    print("\n✅ All unique samples processed. Simulation cycle complete.")
+        for sample in shuffled_samples:
+            # FORCE UNIQUENESS: Add a timestamp to the content 
+            # so every single signal is unique even if the base text is shared.
+            unique_sample = dict(sample)
+            timestamp = time.strftime("%H:%M:%S")
+            unique_sample["content"] = f"{sample['content']} [ID: {timestamp}-{random.randint(100,999)}]"
+            
+            try:
+                resp = requests.post(API_URL, json=unique_sample)
+                if resp.status_code == 200:
+                    alert = resp.json()
+                    print(f"[{unique_sample['platform']}] Ingested Unique: {unique_sample['content'][:40]}...")
+                else:
+                    print(f"Backend returned: {resp.status_code}")
+            except Exception as e:
+                print(f"Connection Error: {e}")
+            
+            time.sleep(4) # Balanced speed for monitoring
+            
+        cycle_count += 1
+        print(f"\n--- Cycle complete. Shuffling for next run... ---")
 
 if __name__ == "__main__":
     simulate()
