@@ -68,7 +68,13 @@ else:
 
 @app.get("/health")
 async def health_check():
-    return {"status": "healthy", "timestamp": datetime.utcnow()}
+    storage = "MongoDB" if posts_col is not None else "In-Memory (Fallback)"
+    return {
+        "status": "healthy", 
+        "timestamp": datetime.utcnow(),
+        "storage_mode": storage,
+        "database_connected": posts_col is not None
+    }
 
 @app.post("/posts/ingest", response_model=Alert)
 async def ingest_post(post: Post):
