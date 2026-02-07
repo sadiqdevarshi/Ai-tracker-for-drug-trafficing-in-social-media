@@ -288,6 +288,7 @@
                 platform_distribution: { Telegram: 0, Instagram: 0 }
             });
             const [backendStatus, setBackendStatus] = useState('Checking...');
+            const [storageMode, setStorageMode] = useState('Checking...');
             const [lastUpdate, setLastUpdate] = useState(new Date());
             const [apiEndpoint] = useState(
                 window.location.protocol === 'file:'
@@ -305,9 +306,11 @@
                         fetch(`${apiEndpoint}/health`)
                     ]);
                     if (alertsRes.ok && statsRes.ok && healthRes.ok) {
+                        const healthData = await healthRes.json();
                         setAlerts(await alertsRes.json());
                         setStats(await statsRes.json());
                         setBackendStatus('Live');
+                        setStorageMode(healthData.storage_mode);
                         setLastUpdate(new Date());
                     } else {
                         setBackendStatus('Error');
@@ -359,6 +362,11 @@
                             </p>
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', alignItems: 'flex-end' }}>
+                            <div className="status-pill">
+                                <span style={{ fontSize: '0.8rem', color: storageMode.includes('In-Memory') ? 'var(--warning)' : 'var(--success)' }}>
+                                    Storage: {storageMode}
+                                </span>
+                            </div>
                             <div className="status-pill">
                                 <div className="dot" style={{ backgroundColor: backendStatus === 'Live' ? '#10b981' : '#ef4444' }}></div>
                                 <span style={{ fontSize: '0.9rem', fontWeight: 500 }}>System: {backendStatus}</span>

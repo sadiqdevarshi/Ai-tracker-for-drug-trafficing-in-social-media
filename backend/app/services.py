@@ -32,12 +32,12 @@ class AIEngine:
         text_lower = text.lower()
         matches = [kw for kw in self.trigger_keywords if kw in text_lower]
         
-        if len(matches) > 2:
+        if len(matches) >= 2:
             intent = "selling"
-            confidence = 0.85 + (random.random() * 0.1)
+            confidence = 0.9 + (random.random() * 0.1)
         elif len(matches) > 0:
             intent = "suspicious"
-            confidence = 0.6 + (random.random() * 0.2)
+            confidence = 0.7 + (random.random() * 0.2)
         else:
             intent = "neutral"
             confidence = 0.9 + (random.random() * 0.05)
@@ -68,17 +68,19 @@ class AIEngine:
         behavioral_score = random.randint(20, 90) if nlp_result["intent"] != "neutral" else random.randint(0, 30)
         
         # Weighted Risk Calculation
-        # NLP (40%) + Image (30%) + Behavioral (30%)
-        base_score = (nlp_result["confidence"] * 40 if nlp_result["intent"] != "neutral" else 0) + \
-                     (img_result["confidence"] * 30) + \
-                     (behavioral_score * 0.3)
+        # NLP (50%) + Image (25%) + Behavioral (25%)
+        nlp_weight = 50 if nlp_result["intent"] == "selling" else (30 if nlp_result["intent"] == "suspicious" else 0)
+        
+        base_score = (nlp_result["confidence"] * nlp_weight) + \
+                     (img_result["confidence"] * 25) + \
+                     (behavioral_score * 0.25)
         
         final_score = min(int(base_score), 100)
         
         level = "Low"
-        if final_score > 70:
+        if final_score >= 60:
             level = "High"
-        elif final_score > 40:
+        elif final_score > 30:
             level = "Medium"
             
         reasoning = []

@@ -110,14 +110,15 @@ else:
     db_memory = {"posts": [], "alerts": []}
     posts_col = None
     alerts_col = None
-    logger.info("Using in-memory storage (Fallback)")
+    logger.warning("!!! RUNNING IN IN-MEMORY STORAGE MODE (DATABASE NOT CONNECTED) !!!")
+    logger.info("Data will be LOST when the service restarts.")
 
 @app.get("/health")
 async def health_check():
     return {
         "status": "healthy", 
         "timestamp": datetime.utcnow(),
-        "storage_mode": "MongoDB" if posts_col is not None else "In-Memory",
+        "storage_mode": "Persistent (MongoDB)" if posts_col is not None else "In-Memory (Ephemeral)",
         "database_connected": posts_col is not None
     }
 
