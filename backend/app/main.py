@@ -184,8 +184,22 @@ async def ingest_post(post: Post):
         logger.error(f"INGEST ERROR: Failed to process post: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))
 
+# Track if this worker has done an initial ingest
+INITIAL_INGEST_DONE = False
+
 @app.get("/alerts", response_model=List[Alert])
 async def get_alerts():
+    global INITIAL_INGEST_DONE
+    
+    # Auto-populate if empty (helpful for multi-worker free tier)
+    if not INITIAL_INGEST_DONE and posts_col is None and len(db_memory["posts"]) == 0:
+        logger.info("Auto-populating alerts for new worker instance...")
+        try:
+            await force_ingest()
+            INITIAL_INGEST_DONE = True
+        except Exception as e:
+            logger.error(f"Auto-populate failed: {e}")
+
     if alerts_col is not None:
         cursor = alerts_col.find().sort("risk_score.score", -1)
         return [Alert(**doc) for doc in cursor]
@@ -193,6 +207,14 @@ async def get_alerts():
 
 @app.get("/stats")
 async def get_stats():
+    # Also trigger auto-populate here just in case
+    global INITIAL_INGEST_DONE
+    if not INITIAL_INGEST_DONE and posts_col is None and len(db_memory["posts"]) == 0:
+        try:
+            await force_ingest()
+            INITIAL_INGEST_DONE = True
+        except: pass
+
     if posts_col is not None:
         total = posts_col.count_documents({})
         high_risk = alerts_col.count_documents({"risk_score.level": "High"})
