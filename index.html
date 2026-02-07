@@ -291,6 +291,7 @@
             const [backendStatus, setBackendStatus] = useState('Checking...');
             const [storageMode, setStorageMode] = useState('Checking...');
             const [lastUpdate, setLastUpdate] = useState(new Date());
+            const [showPersistenceWizard, setShowPersistenceWizard] = useState(false);
             const [apiEndpoint] = useState(
                 window.location.protocol === 'file:'
                     ? 'http://localhost:8000'
@@ -374,6 +375,7 @@
                             )}
                         </div>
                     </header>
+
 
                     <div className="stats-grid">
                         <div className="card">
@@ -468,7 +470,7 @@
                         <div style={{ textAlign: 'right' }}>
                             <div>Total Posts: <strong>{stats.total_processed}</strong></div>
                             <div>High Risk: <strong style={{ color: 'var(--danger)' }}>{stats.high_risk_alerts}</strong></div>
-                            <div style={{ marginTop: '0.5rem', opacity: 0.5 }}>v1.1-final</div>
+                            <div style={{ marginTop: '0.5rem', opacity: 0.5 }}>v1.2-final</div>
                         </div>
                     </footer>
 
@@ -571,6 +573,7 @@
                             </div>
                         </div>
                     )}
+
                 </div>
             );
         };
