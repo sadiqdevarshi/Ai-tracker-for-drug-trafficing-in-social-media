@@ -290,6 +290,7 @@
             const [backendStatus, setBackendStatus] = useState('Checking...');
             const [storageMode, setStorageMode] = useState('Checking...');
             const [lastUpdate, setLastUpdate] = useState(new Date());
+            const [showPersistenceWizard, setShowPersistenceWizard] = useState(false);
             const [apiEndpoint] = useState(
                 window.location.protocol === 'file:'
                     ? 'http://localhost:8000'
@@ -362,9 +363,9 @@
                             </p>
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', alignItems: 'flex-end' }}>
-                            <div className="status-pill">
+                            <div className="status-pill" style={{ cursor: storageMode.includes('In-Memory') ? 'pointer' : 'default' }} onClick={() => storageMode.includes('In-Memory') && setShowPersistenceWizard(true)}>
                                 <span style={{ fontSize: '0.8rem', color: storageMode.includes('In-Memory') ? 'var(--warning)' : 'var(--success)' }}>
-                                    Storage: {storageMode}
+                                    Storage: {storageMode} {storageMode.includes('In-Memory') && '⚠️'}
                                 </span>
                             </div>
                             <div className="status-pill">
@@ -378,6 +379,38 @@
                             )}
                         </div>
                     </header>
+
+                    {storageMode.includes('In-Memory') && (
+                        <div style={{
+                            background: 'rgba(245, 158, 11, 0.1)',
+                            border: '1px solid var(--warning)',
+                            padding: '1rem',
+                            borderRadius: '0.75rem',
+                            marginBottom: '2rem',
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center'
+                        }}>
+                            <div>
+                                <strong style={{ color: 'var(--warning)' }}>⚠️ Signals will reset on restart!</strong>
+                                <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>You are in In-Memory mode. Connect a database to save your data permanently.</p>
+                            </div>
+                            <button
+                                onClick={() => setShowPersistenceWizard(true)}
+                                style={{
+                                    background: 'var(--warning)',
+                                    color: 'var(--bg-dark)',
+                                    border: 'none',
+                                    padding: '0.5rem 1rem',
+                                    borderRadius: '0.5rem',
+                                    fontWeight: '700',
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                Fix This Now
+                            </button>
+                        </div>
+                    )}
 
                     <div className="stats-grid">
                         <div className="card">
@@ -569,6 +602,57 @@
                                     </button>
                                     <button className="btn btn-secondary" onClick={handleCloseModal}>
                                         Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Persistence Wizard Modal */}
+                    {showPersistenceWizard && (
+                        <div className="modal-overlay" onClick={() => setShowPersistenceWizard(false)}>
+                            <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '600px' }}>
+                                <div className="modal-header">
+                                    <h2 style={{ margin: 0, color: 'var(--warning)' }}>Fix Data Resetting Guide</h2>
+                                    <button className="modal-close" onClick={() => setShowPersistenceWizard(false)}>×</button>
+                                </div>
+
+                                <p style={{ marginBottom: '1.5rem', color: 'var(--text-muted)' }}>
+                                    To stop signals from disappearing when Render restarts, you need to connect a permanent database.
+                                </p>
+
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                                    <div style={{ background: 'rgba(255,255,255,0.05)', padding: '1.25rem', borderRadius: '0.75rem' }}>
+                                        <div style={{ fontWeight: 700, marginBottom: '0.5rem' }}>Step 1: Get a Free Database</div>
+                                        <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                                            Go to <a href="https://www.mongodb.com/atlas/database" target="_blank" style={{ color: 'var(--primary)' }}>MongoDB Atlas</a> and create a <strong>FREE M0 cluster</strong>.
+                                            Copy your "Connection String" (it starts with <code>mongodb+srv://...</code>).
+                                        </p>
+                                    </div>
+
+                                    <div style={{ background: 'rgba(255,255,255,0.05)', padding: '1.25rem', borderRadius: '0.75rem' }}>
+                                        <div style={{ fontWeight: 700, marginBottom: '0.5rem' }}>Step 2: Add to Render</div>
+                                        <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                                            Go to your Render Dashboard → Select <code>drugdetect-backend</code> → Environment → Click <strong>"Add Environment Variable"</strong>.
+                                        </p>
+                                        <div style={{ marginTop: '0.5rem', padding: '0.75rem', background: '#000', borderRadius: '0.5rem', fontFamily: 'monospace' }}>
+                                            Key: MONGODB_URI<br />
+                                            Value: [Your Connection String]
+                                        </div>
+                                    </div>
+
+                                    <div style={{ background: 'rgba(255,255,255,0.05)', padding: '1.25rem', borderRadius: '0.75rem' }}>
+                                        <div style={{ fontWeight: 700, marginBottom: '0.5rem' }}>Step 3: Save and Deploy</div>
+                                        <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                                            Save changes on Render. The service will restart and show <strong>Storage: Persistent (MongoDB)</strong> in green.
+                                            Your signals will never reset again!
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div className="action-buttons">
+                                    <button className="btn btn-secondary" onClick={() => setShowPersistenceWizard(false)} style={{ width: '100%' }}>
+                                        I Understand, Close Guide
                                     </button>
                                 </div>
                             </div>
