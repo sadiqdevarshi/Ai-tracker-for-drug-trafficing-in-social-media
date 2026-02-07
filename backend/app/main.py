@@ -2,7 +2,7 @@ import os
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List
-import uuid
+ import uuid
 from datetime import datetime
 from pymongo import MongoClient
 
@@ -109,7 +109,7 @@ app.add_middleware(
 
 @app.get("/ping")
 async def ping():
-    return {"status": "ok", "message": "Backend is reachable", "version": "v1.1-final", "timestamp": datetime.utcnow()}
+    return {"status": "ok", "message": "Backend is reachable", "version": "v1.2-final", "timestamp": datetime.utcnow()}
 
 # Database Configuration
 MONGODB_URI = os.getenv("MONGODB_URI")
