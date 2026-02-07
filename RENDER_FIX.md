@@ -1,152 +1,34 @@
-# 🔧 Fixing "Root directory backend does not exist" Error
+# 🏁 Final Presentation Troubleshooting (v1.1)
 
-## The Problem
+This guide helps you ensure your **DrugDetect AI** platform is perfect for your live demo.
 
-You're seeing this error on Render:
-```
-==> Root directory "backend" does not exist. Verify the Root Directory configured in your service settings.
-```
+## ✅ Step 1: Verify the Build
+Always check the bottom right of your dashboard. You should see:
+- **v1.1-final** (This confirms the latest stable code is running).
 
-## The Solution
+## 🛠️ Step 2: Fixing Data Resets (Persistence)
+If your dashboard shows **"Storage: In-Memory"** in orange, signals will disappear if the server restarts.
 
-This error occurs because either:
-1. Your code hasn't been pushed to GitHub yet, OR
-2. Render's Root Directory setting is incorrect
+**How to Fix During Demo:**
+1.  **Click the orange status pill** ("Storage: In-Memory").
+2.  A 2-step guide will pop up.
+3.  Add your `MONGODB_URI` to Render's environment variables.
+4.  Once the server restarts, you will see **"Storage: Persistent"** in green.
 
----
+## 🔄 Step 3: Troubleshooting "Old" Dashboard
+If you still see the big yellow banner or don't see the v1.1 tag:
+- **Action:** Press `Ctrl + F5` (on Windows) or `Cmd + Shift + R` (on Mac).
+- This clears your browser's cache and loads the absolute latest version.
 
-## ✅ Quick Fix - Option 1: Remove Root Directory Setting
+## 🚀 Step 4: Using the Simulator
+To flood the dashboard with thousands of unique signals:
+1.  Open PowerShell in this directory.
+2.  Run: `python simulate_data.py`.
+3.  The simulator is pre-configured to point to your live URL.
 
-**This is the easiest solution!**
-
-Instead of setting "Root Directory" to `backend`, we'll deploy from the root and adjust the commands:
-
-### On Render Dashboard:
-
-1. **Go to your service settings**
-2. **Root Directory:** Leave this **EMPTY** or set to `.`
-3. **Build Command:** `cd backend && pip install -r requirements.txt`
-4. **Start Command:** `cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT`
-5. Click **"Save Changes"**
-6. Click **"Manual Deploy"** → **"Deploy latest commit"**
-
----
-
-## ✅ Quick Fix - Option 2: Push to GitHub First
-
-If you haven't pushed to GitHub yet:
-
-```bash
-# Make sure you're in the project directory
-cd C:\Users\sadiq\.gemini\antigravity\scratch\drug-detect-ai
-
-# Add GitHub remote (replace YOUR_USERNAME with your actual GitHub username)
-git remote add origin https://github.com/YOUR_USERNAME/drug-detect-ai.git
-
-# Push to GitHub
-git branch -M main
-git push -u origin main
-```
-
-Then on Render:
-1. Reconnect to your GitHub repository
-2. Make sure it's pointing to the `main` branch
-3. Set **Root Directory:** `backend`
-4. **Build Command:** `pip install -r requirements.txt`
-5. **Start Command:** `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
-6. Deploy
+## 🔗 Live URLs
+- **Primary:** [https://ai-tracker-for-drug-trafficing-in-social-a16v.onrender.com/](https://ai-tracker-for-drug-trafficing-in-social-a16v.onrender.com/)
+- **Backup:** [https://ai-tracker-for-drug-trafficing-in-social-exed.onrender.com/](https://ai-tracker-for-drug-trafficing-in-social-exed.onrender.com/)
 
 ---
-
-## ✅ Quick Fix - Option 3: Use Render Blueprint
-
-Create a `render.yaml` file at the root of your project (already in your repo):
-
-```yaml
-services:
-  - type: web
-    name: drugdetect-backend
-    env: python
-    region: oregon
-    plan: free
-    buildCommand: cd backend && pip install -r requirements.txt
-    startCommand: cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT
-```
-
-Then on Render:
-1. Delete the current service
-2. Click "New" → "Blueprint"
-3. Connect your GitHub repository
-4. Render will automatically detect `render.yaml`
-5. Deploy
-
----
-
-## 🎯 Recommended: Option 1 (Easiest)
-
-**Just change these settings on Render:**
-
-| Setting | Current (Wrong) | New (Correct) |
-|---------|----------------|---------------|
-| **Root Directory** | `backend` | *(empty)* or `.` |
-| **Build Command** | `pip install -r requirements.txt` | `cd backend && pip install -r requirements.txt` |
-| **Start Command** | `uvicorn app.main:app --host 0.0.0.0 --port $PORT` | `cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT` |
-
-Then click **"Manual Deploy"** → **"Deploy latest commit"**
-
----
-
-## 📸 Screenshot Reference
-
-Here's what your Render settings should look like:
-
-**Environment:** Python 3  
-**Branch:** main  
-**Root Directory:** *(leave empty)*  
-**Build Command:** `cd backend && pip install -r requirements.txt`  
-**Start Command:** `cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT`  
-**Instance Type:** Free
-
----
-
-## ✅ Verification
-
-After deploying, test your backend:
-
-```bash
-curl https://your-app-name.onrender.com/health
-```
-
-Should return:
-```json
-{"status":"healthy","timestamp":"..."}
-```
-
----
-
-## Still Having Issues?
-
-1. **Check Render Logs:**
-   - Go to your service dashboard
-   - Click "Logs" tab
-   - Look for error messages
-
-2. **Verify GitHub Repository:**
-   - Make sure your code is pushed to GitHub
-   - Check that the `backend` folder exists in your repository
-   - Verify the `main` branch is selected
-
-3. **Try Manual Deploy:**
-   - After changing settings, click "Manual Deploy"
-   - Select "Clear build cache & deploy"
-
----
-
-## Need Help?
-
-If you're still stuck, share:
-1. Screenshot of your Render service settings
-2. The deployment logs from Render
-3. Your GitHub repository URL
-
-I'll help you fix it! 🚀
+**Good luck with your presentation!** 🚀

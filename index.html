@@ -298,7 +298,6 @@
             );
             const [selectedAlert, setSelectedAlert] = useState(null);
             const [showModal, setShowModal] = useState(false);
-            const [showPersistenceWizard, setShowPersistenceWizard] = useState(false);
 
             const fetchData = async () => {
                 try {
@@ -364,11 +363,6 @@
                             </p>
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', alignItems: 'flex-end' }}>
-                            <div className="status-pill" style={{ cursor: storageMode.includes('In-Memory') ? 'pointer' : 'default', border: storageMode.includes('In-Memory') ? '1px solid var(--warning)' : '1px solid var(--success)' }} onClick={() => storageMode.includes('In-Memory') && setShowPersistenceWizard(true)}>
-                                <span style={{ fontSize: '0.8rem', color: storageMode.includes('In-Memory') ? 'var(--warning)' : 'var(--success)' }}>
-                                    Storage: {storageMode} {storageMode.includes('In-Memory') && ' (Click to Fix)'}
-                                </span>
-                            </div>
                             <div className="status-pill">
                                 <div className="dot" style={{ backgroundColor: backendStatus === 'Live' ? '#10b981' : '#ef4444' }}></div>
                                 <span style={{ fontSize: '0.9rem', fontWeight: 500 }}>System: {backendStatus}</span>
@@ -572,53 +566,6 @@
                                     </button>
                                     <button className="btn btn-secondary" onClick={handleCloseModal}>
                                         Cancel
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Persistence Wizard Modal */}
-                    {showPersistenceWizard && (
-                        <div className="modal-overlay" onClick={() => setShowPersistenceWizard(false)}>
-                            <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '600px' }}>
-                                <div className="modal-header">
-                                    <h2 style={{ margin: 0, color: 'var(--warning)' }}>Why do signals reset?</h2>
-                                    <button className="modal-close" onClick={() => setShowPersistenceWizard(false)}>×</button>
-                                </div>
-
-                                <p style={{ marginBottom: '1.5rem', color: 'var(--text-muted)' }}>
-                                    Signals reset because you are in <strong>In-Memory Mode</strong>. On Render's free tier, the server restarts occasionally, which clears the memory.
-                                </p>
-
-                                <div style={{ background: 'rgba(245, 158, 11, 0.1)', padding: '1rem', borderRadius: '0.75rem', marginBottom: '1.5rem', border: '1px solid var(--warning)' }}>
-                                    <strong style={{ color: 'var(--warning)' }}>Solution:</strong> Connect a free MongoDB database to save signals permanently.
-                                </div>
-
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                                    <div style={{ background: 'rgba(255,255,255,0.05)', padding: '1.25rem', borderRadius: '0.75rem' }}>
-                                        <div style={{ fontWeight: 700, marginBottom: '0.5rem' }}>Step 1: Get a Free Database</div>
-                                        <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                                            Join <a href="https://www.mongodb.com/atlas/database" target="_blank" style={{ color: 'var(--primary)' }}>MongoDB Atlas</a> and create a <strong>FREE M0 cluster</strong>.
-                                            Copy your connection string.
-                                        </p>
-                                    </div>
-
-                                    <div style={{ background: 'rgba(255,255,255,0.05)', padding: '1.25rem', borderRadius: '0.75rem' }}>
-                                        <div style={{ fontWeight: 700, marginBottom: '0.5rem' }}>Step 2: Add to Render Dashboard</div>
-                                        <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                                            Open Render → <code>{window.location.hostname.split('.')[0]}</code> → Environment → Add Variable:
-                                        </p>
-                                        <div style={{ marginTop: '0.5rem', padding: '0.75rem', background: '#000', borderRadius: '0.5rem', fontFamily: 'monospace' }}>
-                                            Key: <strong>MONGODB_URI</strong><br />
-                                            Value: [Your Connection String]
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="action-buttons">
-                                    <button className="btn btn-secondary" onClick={() => setShowPersistenceWizard(false)} style={{ width: '100%' }}>
-                                        Close and Continue Presentation
                                     </button>
                                 </div>
                             </div>
