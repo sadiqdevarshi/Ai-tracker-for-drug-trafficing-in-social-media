@@ -19,45 +19,58 @@ import random
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Module-level demo samples
-DEMO_SAMPLES = [
-    {"platform": "Telegram", "content": "Ice and crystal shards available. Discrete shipping.", "author_id": "demo_vendor_1"},
-    {"platform": "Instagram", "content": "Got those Xanax bars and Adderall. DM for menu.", "author_id": "demo_vendor_2"},
-    {"platform": "Telegram", "content": "Pure white snow just landed. Fast delivery.", "author_id": "demo_vendor_3"},
-    {"platform": "Instagram", "content": "New green buds in stock. High quality herb.", "author_id": "demo_vendor_4"},
-    {"platform": "Telegram", "content": "Fent patches and bricks available. High purity.", "author_id": "demo_vendor_5"},
-    {"platform": "Instagram", "content": "Got those 🍫 and 🍬 for the weekend party. DM for delivery.", "author_id": "demo_vendor_6"},
-    {"platform": "Telegram", "content": "Top shelf snow ❄️ available. Pure white. Fast delivery.", "author_id": "demo_vendor_7"},
-    {"platform": "Instagram", "content": "Fresh green 🥦 and loud 🔊 vibes only. DM for delivery.", "author_id": "demo_vendor_8"},
-    {"platform": "Telegram", "content": "K-pins and footballs in stock. 💊 Blue and yellow bars.", "author_id": "demo_vendor_9"},
-    {"platform": "Instagram", "content": "Roxies 30mg. Genuine pharma. Wickr: pharm_plug", "author_id": "demo_vendor_10"}
-]
+# Signal Generation Templates
+VARIETY_DATA = {
+    "drugs": ["Xanax", "Adderall", "Oxy", "Percocet", "Ice", "Crystal", "Meth", "Snow", "Buds", "Green", "Lean", "M30 blues", "K-pins", "Football", "Tina", "Glass"],
+    "adjectives": ["Pure", "High quality", "Top shelf", "Sealed", "Pharma grade", "Banging", "10/10", "Fresh", "Uncut", "Genuine"],
+    "delivery": ["Discrete shipping", "Overnight delivery", "Direct drop", "Fast shipping", "Local pickup", "Worldwide delivery", "Unmarked packaging", "Safe drop"],
+    "connects": ["DM for menu", "Hit the wickr", "Telegram me", "Check bio link", "Signal for details", "Private message me"],
+    "emojis": ["📦", "💊", "❄️", "🔌", "🥦", "🍇", "💎", "🚀", "🤫"]
+}
+
+def generate_demo_content():
+    r = random.random()
+    d = VARIETY_DATA
+    drug = random.choice(d["drugs"])
+    adj = random.choice(d["adjectives"])
+    delivery = random.choice(d["delivery"])
+    conn = random.choice(d["connects"])
+    emoji = random.choice(d["emojis"])
+    
+    if r < 0.3:
+        return f"{adj} {drug} available now. {delivery}. {conn} {emoji}"
+    elif r < 0.6:
+        return f"New {drug} drop just landed! {adj} quality. {conn} for {delivery}. {emoji}"
+    elif r < 0.8:
+        return f"Got {drug}. {delivery} only. {conn} {emoji}"
+    else:
+        return f"Best {drug} in town. {adj} vibes. {conn}. {emoji}"
 
 async def demo_mode_loop():
-    """Periodically ingests a random sample to keep the dashboard active on Render."""
-    logger.info("DEMO MODE: Starting background ingest loop...")
-    
-    # Wait for app to be fully ready
+    """Periodically generates and ingests unique signals to keep the dashboard active."""
+    logger.info("DEMO MODE: Starting background dynamic ingest loop...")
     await asyncio.sleep(5)
     
     while True:
         try:
-            sample = random.choice(DEMO_SAMPLES)
-            post_content = f"{sample['content']} [DEMO {datetime.utcnow().strftime('%H:%M:%S')}]"
+            platform = random.choice(["Telegram", "Instagram"])
+            content = generate_demo_content()
+            # Absolute uniqueness for deduplication
+            post_content = f"{content} [DEMO {datetime.utcnow().strftime('%H:%M:%S.%f')[:-3]}]"
             
             post = Post(
-                platform=sample["platform"],
+                platform=platform,
                 content=post_content,
-                author_id=sample["author_id"],
+                author_id=f"demo_v2_{random.randint(100, 999)}",
                 timestamp=datetime.utcnow()
             )
             
             await ingest_post(post)
-            logger.info(f"DEMO MODE: Automatically ingested {sample['platform']} signal")
+            logger.info(f"DEMO MODE: Automatically generated {platform} variety signal")
         except Exception as e:
-            logger.error(f"DEMO MODE ERROR: Unexpected failure in loop: {e}", exc_info=True)
+            logger.error(f"DEMO MODE ERROR: {e}", exc_info=True)
             
-        await asyncio.sleep(30)
+        await asyncio.sleep(random.uniform(5, 15)) # Faster, more realistic demo flow
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -109,7 +122,7 @@ app.add_middleware(
 
 @app.get("/ping")
 async def ping():
-    return {"status": "ok", "message": "Backend is reachable", "version": "v1.2.3-persistent-info", "timestamp": datetime.utcnow()}
+    return {"status": "ok", "message": "Backend is reachable", "version": "v1.2.4-variety", "timestamp": datetime.utcnow()}
 
 # Database Configuration
 MONGODB_URI = os.getenv("MONGODB_URI")
