@@ -109,7 +109,7 @@ app.add_middleware(
 
 @app.get("/ping")
 async def ping():
-    return {"status": "ok", "message": "Backend is reachable", "timestamp": datetime.utcnow()}
+    return {"status": "ok", "message": "Backend is reachable", "version": "v1.1-final", "timestamp": datetime.utcnow()}
 
 # Database Configuration
 MONGODB_URI = os.getenv("MONGODB_URI")
