@@ -107,8 +107,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get("/ping")
+async def ping():
+    return {"status": "ok", "message": "Backend is reachable", "timestamp": datetime.utcnow()}
+
 # Database Configuration
 MONGODB_URI = os.getenv("MONGODB_URI")
+logger.info(f"Checking MONGODB_URI environment variable... {'Set' if MONGODB_URI else 'Not Set'}")
 if MONGODB_URI:
     try:
         # Added 5s timeout to prevent startup hang if DB is unreachable
