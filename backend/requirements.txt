@@ -1,4 +1,5 @@
-fastapi
+# Force build v1.1-final-2
+fastapi==0.109.2
 uvicorn[standard]
 pydantic
 python-multipart
