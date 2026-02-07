@@ -11,7 +11,7 @@ class RiskScore(BaseModel):
     reasoning: List[str]
 
 class Post(BaseModel):
-    id: Optional[str] = Field(None, validation_alias="_id")
+    id: Optional[str] = Field(None, alias="_id")
     platform: str  # "Telegram" or "Instagram"
     content: str
     image_url: Optional[str] = None
@@ -22,7 +22,7 @@ class Post(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
 class Alert(BaseModel):
-    id: Optional[str] = Field(None, validation_alias="_id")
+    id: Optional[str] = Field(None, alias="_id")
     post_id: str
     risk_score: RiskScore
     timestamp: datetime = Field(default_factory=datetime.utcnow)

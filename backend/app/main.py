@@ -140,45 +140,49 @@ async def force_ingest():
 
 @app.post("/posts/ingest", response_model=Alert)
 async def ingest_post(post: Post):
-    # DEDUPLICATION
-    if posts_col is not None:
-        existing = posts_col.find_one({"content": post.content})
-        if existing:
-            alert_data = alerts_col.find_one({"post_id": existing["_id"]})
-            if alert_data: return Alert(**alert_data)
-    else:
-        for p in db_memory["posts"]:
-            if p.content == post.content:
-                for a in db_memory["alerts"]:
-                    if a.post_id == p.id: return a
+    try:
+        # DEDUPLICATION
+        if posts_col is not None:
+            existing = posts_col.find_one({"content": post.content})
+            if existing:
+                alert_data = alerts_col.find_one({"post_id": existing["_id"]})
+                if alert_data: return Alert(**alert_data)
+        else:
+            for p in db_memory["posts"]:
+                if p.content == post.content:
+                    for a in db_memory["alerts"]:
+                        if a.post_id == p.id: return a
 
-    # Create Post
-    post_data = post.model_dump(by_alias=True, exclude={"id"})
-    new_post = Post(_id=str(uuid.uuid4()), **post_data)
-    
-    if posts_col is not None:
-        posts_col.insert_one(new_post.model_dump(by_alias=True))
-    else:
-        db_memory["posts"].append(new_post)
-    
-    # Process with AI Engine
-    risk = ai_engine.calculate_risk(new_post.content, new_post.image_url)
-    
-    # Create Alert
-    alert = Alert(
-        _id=str(uuid.uuid4()),
-        post_id=new_post.id,
-        risk_score=risk,
-        platform=new_post.platform,
-        content_preview=new_post.content[:100] + "..." if len(new_post.content) > 100 else new_post.content
-    )
-    
-    if alerts_col is not None:
-        alerts_col.insert_one(alert.model_dump(by_alias=True))
-    else:
-        db_memory["alerts"].append(alert)
+        # Create Post - Explicitly use 'id' field name
+        post_data = post.model_dump(by_alias=True, exclude={"id"})
+        new_post = Post(id=str(uuid.uuid4()), **post_data)
         
-    return alert
+        if posts_col is not None:
+            posts_col.insert_one(new_post.model_dump(by_alias=True))
+        else:
+            db_memory["posts"].append(new_post)
+        
+        # Process with AI Engine
+        risk = ai_engine.calculate_risk(new_post.content, new_post.image_url)
+        
+        # Create Alert - Explicitly use 'id' field name
+        alert = Alert(
+            id=str(uuid.uuid4()),
+            post_id=new_post.id,
+            risk_score=risk,
+            platform=new_post.platform,
+            content_preview=new_post.content[:100] + "..." if len(new_post.content) > 100 else new_post.content
+        )
+        
+        if alerts_col is not None:
+            alerts_col.insert_one(alert.model_dump(by_alias=True))
+        else:
+            db_memory["alerts"].append(alert)
+            
+        return alert
+    except Exception as e:
+        logger.error(f"INGEST ERROR: Failed to process post: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/alerts", response_model=List[Alert])
 async def get_alerts():
