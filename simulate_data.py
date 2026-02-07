@@ -181,18 +181,179 @@ SAMPLES = [
         "author_id": "clearance_sale_plugs"
     },
 
-    # NEW: Regional Slang (US South)
+    # NEW: US South Regional Slang (Already added, keeping for completeness)
     {
         "platform": "Instagram",
         "content": "I got the best herb 🌿 in the dirty south. Big buds, no seeds. Pull up or hit my line for the drop.",
         "author_id": "atl_herbalist"
     },
 
-    # NEW: Normal Commerce
+    # --- NEW ADDITIONS (30+ SAMPLES) ---
+
+    # BENZOS & PILL PRESSES
+    {
+        "platform": "Telegram",
+        "content": "K-pins and footballs in stock. 💊 Blue and yellow bars. Sealed 100ct bottles available. Trusted vendor. Bulk only.",
+        "author_id": "benzo_king_99"
+    },
     {
         "platform": "Instagram",
-        "content": "New shipment of high-end white t-shirts just arrived! 👕 Minimalist design, pure cotton. Shop link in bio.",
-        "author_id": "minimalist_fashion"
+        "content": "Got those M30 blues back in. 💎 Heavy hitters. 📦 Discrete shipping only. No locals. DM for pricing.",
+        "author_id": "blue_dream_vendor"
+    },
+    {
+        "platform": "Telegram",
+        "content": "Roxies 30mg. Genuine pharma but no labels. 🤐 Fastest shipping in the states. Wickr: pharm_plug",
+        "author_id": "rox_supply"
+    },
+
+    # STIMULANTS
+    {
+        "platform": "Telegram",
+        "content": "Tina/Glass 💎 high purity. Clear shards only. Points or slabs available. Direct message for the signal link.",
+        "author_id": "crystal_clear_deals"
+    },
+    {
+        "platform": "Instagram",
+        "content": "Need a study buddy? 📚 Adderall 20mg/30mg IR ready for the semester. Don't fail your finals. DM me.",
+        "author_id": "academic_edge"
+    },
+    {
+        "platform": "Telegram",
+        "content": "White girl ❄️ just landed. 💃 Purest in the city. Fast delivery 🚗💨 Active all night.",
+        "author_id": "snow_white_chi"
+    },
+
+    # CANNABIS CONCENTRATES (EXOTIC)
+    {
+        "platform": "Instagram",
+        "content": "Full gram carts and distillate 🍯 90%+ THC. All flavors. Rosin and live resin available too. Quality guaranteed.",
+        "author_id": "terp_town_exotics"
+    },
+    {
+        "platform": "Telegram",
+        "content": "Cali tins 🍧 and indoor flower 🥦 freshly imported. Loud vibes only. 10/10 bag appeal. Menu in bio.",
+        "author_id": "import_plug_uk"
+    },
+    {
+        "platform": "Instagram",
+        "content": "Dabs, shatter, and wax. 🍯 Extract kings. Shipping everywhere. 🚀 Low prices for the weekend.",
+        "author_id": "extract_pros"
+    },
+
+    # LIQUID & OPIOIDS
+    {
+        "platform": "Telegram",
+        "content": "Pouring up that mud 🍼 Dirty sprite vibes. Prometh/Codeine syrup. Sealed pints only. Hit the DM for the stash.",
+        "author_id": "lean_team_usa"
+    },
+    {
+        "platform": "Instagram",
+        "content": "Got that liquid gold. 🍇 Fresh drop today. No fakes. DM for menu. Wickr available.",
+        "author_id": "sipping_daily"
+    },
+    {
+        "platform": "Telegram",
+        "content": "China white and H. 🐎 Raw quality. No cut. Trial grams available for serious buyers only.",
+        "author_id": "horse_power_supply"
+    },
+
+    # DISSOCIATIVES
+    {
+        "platform": "Telegram",
+        "content": "Special K / Kitty 🐈 available. Pure shards. Ready for the rave. 🌈 DM for drop-off locations.",
+        "author_id": "rave_essentials_hk"
+    },
+    {
+        "platform": "Instagram",
+        "content": "Get lost in the k-hole. 🌀 High grade ketamine. Liquid and powder. Worldwide stealth shipping.",
+        "author_id": "psychedelic_dreams"
+    },
+
+    # VENDOR & MARKET BEHAVIOR
+    {
+        "platform": "Telegram",
+        "content": "Verified vendor on 3 darknet markets. 🔐 1000+ positive reviews. Stealth is our priority. DM for the link.",
+        "author_id": "top_tier_vendor"
+    },
+    {
+        "platform": "Instagram",
+        "content": "New menu link in bio. 📝 Don't get scammed, follow the official backup. Accepting BTC/XMR/USDT.",
+        "author_id": "official_plug_backup"
+    },
+    {
+        "platform": "Telegram",
+        "content": "Drop locations updated. 📍 Check your private messages for the coordinates. Fast and discrete.",
+        "author_id": "dead_drop_service"
+    },
+
+    # REGIONAL SLANG (AU/UK/CA)
+    {
+        "platform": "Telegram",
+        "content": "Banging gear in Melbourne. 🇦🇺 Shard and points available. Fast delivery 💨 Local pickups only. No time wasters.",
+        "author_id": "melb_plug_direct"
+    },
+    {
+        "platform": "Instagram",
+        "content": "Peng white ❄️ London based. 🇬🇧 Active for the weekend. Hit the line for the drop. 📞",
+        "author_id": "ldn_active_service"
+    },
+    {
+        "platform": "Telegram",
+        "content": "Toronto fire 🔥 Herb and pills. Delivery across the GTA. DM for the menu link. 🇨🇦",
+        "author_id": "gta_dispensary"
+    },
+
+    # MORE FALSE POSITIVES (NOISE)
+    {
+        "platform": "Instagram",
+        "content": "Just ordered the new limited edition carts for my camera rig! 🎥 Can't wait for them to arrive. #filmmaking #gear",
+        "author_id": "indie_director"
+    },
+    {
+        "platform": "Telegram",
+        "content": "Reminder: All medical staff please restock your kits. Basic first aid supplies are now available in the main storage.",
+        "author_id": "hospital_ops"
+    },
+    {
+        "platform": "Instagram",
+        "content": "Using high-quality resin for my new ocean-themed art pieces. 🌊 The clarity is amazing! #resinart #artist",
+        "author_id": "ocean_vibes_studio"
+    },
+    {
+        "platform": "Instagram",
+        "content": "New glass blowing workshop starts next week! 🏮 Come learn how to make your own custom vases. #glassart #craft",
+        "author_id": "fire_and_glass"
+    },
+    {
+        "platform": "Telegram",
+        "content": "Weekly crypto market analysis: BTC and XMR showing interesting trends. Join our trading group for more info.",
+        "author_id": "crypto_analyst_beta"
+    },
+    {
+        "platform": "Instagram",
+        "content": "Who's ready for some sweets at the bake sale? 🧁🍪 All proceeds go to charity. DM to order!",
+        "author_id": "charity_bakes"
+    },
+    {
+        "platform": "Instagram",
+        "content": "Cleaning up the snow after a big storm. ❄️🚜 Winter in Canada is no joke! #snowday #winter",
+        "author_id": "mountain_life_88"
+    },
+    {
+        "platform": "Telegram",
+        "content": "Looking for a reliable shipping partner for my e-commerce brand. Needs to handle global logistics. DM with rates.",
+        "author_id": "startup_owner_01"
+    },
+    {
+        "platform": "Instagram",
+        "content": "Exploring the green hills of Ireland. 🇮🇪 Magical scenery everywhere you look. #travel #photography",
+        "author_id": "world_traveler"
+    },
+    {
+        "platform": "Instagram",
+        "content": "The purity of this white marble is perfect for the new kitchen countertops. 🏛️ Elegant and timeless. #homedesign",
+        "author_id": "interior_pros"
     }
 ]
 

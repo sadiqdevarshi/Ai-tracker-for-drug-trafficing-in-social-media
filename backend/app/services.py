@@ -14,7 +14,17 @@ class AIEngine:
             "direct message", "private deal", "unmarked", "fent",
             "perc", "bars", "stamps", "bricks", "weight", "oz",
             "gram", "wholesale", "🍭", "🍬", "❄️", "🔌", "🍄",
-            "btc", "xmr", "monero", "crypto", "gear", "peng"
+            "btc", "xmr", "monero", "crypto", "gear", "peng",
+            "tina", "glass", "points", "slabs", "blotter", "tabs",
+            "gel tabs", "presses", "m30", "roxies", "blues", "yellows",
+            "k-pins", "footballs", "carts", "distillate", "resin",
+            "rosin", "dabs", "shatter", "wax", "liquid gold", "lean",
+            "dirty sprite", "mud", "purple drank", "special k", "ket",
+            "k-hole", "kitty", "white girl", "girl", "boy", "h",
+            "horse", "tar", "speed", "uppers", "downers", "bennies",
+            "dex", "study buddy", "concentrates", "loud", "exotic",
+            "cali", "topshelf", "terps", "shipped", "doorstep",
+            "darknet", "vendor", "escrow", "stealth"
         ]
 
     def classify_intent(self, text: str) -> Dict:

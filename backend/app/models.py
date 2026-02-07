@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from typing import List, Optional
 from datetime import datetime
 
@@ -11,7 +11,7 @@ class RiskScore(BaseModel):
     reasoning: List[str]
 
 class Post(BaseModel):
-    id: Optional[str] = Field(None, alias="_id")
+    id: Optional[str] = Field(None, validation_alias="_id")
     platform: str  # "Telegram" or "Instagram"
     content: str
     image_url: Optional[str] = None
@@ -19,11 +19,15 @@ class Post(BaseModel):
     author_id: str
     is_processed: bool = False
 
+    model_config = ConfigDict(populate_by_name=True)
+
 class Alert(BaseModel):
-    id: Optional[str] = Field(None, alias="_id")
+    id: Optional[str] = Field(None, validation_alias="_id")
     post_id: str
     risk_score: RiskScore
     timestamp: datetime = Field(default_factory=datetime.utcnow)
     status: str = "Pending"  # Pending, Flagged, Dismissed
     platform: str
     content_preview: str
+
+    model_config = ConfigDict(populate_by_name=True)

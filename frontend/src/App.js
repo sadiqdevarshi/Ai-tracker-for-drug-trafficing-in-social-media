@@ -16,7 +16,8 @@ const Dashboard = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+  const API_URL = process.env.REACT_APP_API_URL ||
+    (window.location.hostname === 'localhost' ? 'http://localhost:8000' : window.location.origin);
 
   const fetchData = async () => {
     try {

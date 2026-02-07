@@ -11,12 +11,64 @@ from .models import Post, Alert, RiskScore
 from .services import ai_engine
 
 import logging
+import asyncio
+import random
 
 # Configure logging to see errors in Render logs
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = FastAPI(title="DrugDetect AI API")
+
+# Background task for Demo Mode
+async def demo_mode_loop():
+    """Periodically ingests a random sample to keep the dashboard active on Render."""
+    from .services import ai_engine
+    from .models import Post
+    
+    # Simple list of a few sample post items for the background loop
+    DEMO_SAMPLES = [
+        {"platform": "Telegram", "content": "Ice and crystal shards available. Discrete shipping.", "author_id": "demo_vendor_1"},
+        {"platform": "Instagram", "content": "Got those Xanax bars and Adderall. DM for menu.", "author_id": "demo_vendor_2"},
+        {"platform": "Telegram", "content": "Pure white snow just landed. Fast delivery.", "author_id": "demo_vendor_3"},
+        {"platform": "Instagram", "content": "New green buds in stock. High quality herb.", "author_id": "demo_vendor_4"},
+        {"platform": "Telegram", "content": "Fent patches and bricks available. High purity.", "author_id": "demo_vendor_5"},
+        {"platform": "Instagram", "content": "Got those 🍫 and 🍬 for the weekend party. DM for delivery.", "author_id": "demo_vendor_6"},
+        {"platform": "Telegram", "content": "Top shelf snow ❄️ available. Pure white. Fast delivery.", "author_id": "demo_vendor_7"},
+        {"platform": "Instagram", "content": "Fresh green 🥦 and loud 🔊 vibes only. DM for delivery.", "author_id": "demo_vendor_8"},
+        {"platform": "Telegram", "content": "K-pins and footballs in stock. 💊 Blue and yellow bars.", "author_id": "demo_vendor_9"},
+        {"platform": "Instagram", "content": "Roxies 30mg. Genuine pharma. Wickr: pharm_plug", "author_id": "demo_vendor_10"}
+    ]
+    
+    # Wait a few seconds for startup
+    await asyncio.sleep(5)
+    
+    while True:
+        try:
+            sample = random.choice(DEMO_SAMPLES)
+            # Add timestamp to make unique
+            post_content = f"{sample['content']} [DEMO {datetime.utcnow().strftime('%H:%M:%S')}]"
+            
+            post = Post(
+                platform=sample["platform"],
+                content=post_content,
+                author_id=sample["author_id"],
+                timestamp=datetime.utcnow()
+            )
+            
+            # Use the existing ingest logic
+            await ingest_post(post)
+            logger.info(f"DEMO MODE: Automatically ingested {sample['platform']} signal")
+        except Exception as e:
+            logger.error(f"Demo mode error: {e}")
+            
+        await asyncio.sleep(30) # Every 30 seconds for a better dashboard experience
+
+@app.on_event("startup")
+async def startup_event():
+    if os.getenv("ENABLE_DEMO_MODE", "true").lower() == "true":
+        asyncio.create_task(demo_mode_loop())
+        logger.info("Demo mode enabled: Background ingest task started.")
 
 @app.get("/")
 async def serve_index():
