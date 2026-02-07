@@ -75,19 +75,28 @@ app = FastAPI(title="DrugDetect AI API", lifespan=lifespan)
 @app.get("/")
 async def serve_index():
     try:
+        # Log CWD to debug Render file environment
+        cwd = os.getcwd()
+        logger.info(f"Serving request. CWD: {cwd}")
+        
         base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
         paths_to_check = [
             os.path.join(base_dir, "index.html"),
+            os.path.join(cwd, "index.html"),
+            os.path.join(cwd, "backend", "index.html"), # Just in case
             "index.html",
             "/opt/render/project/src/index.html"
         ]
         
         for index_path in paths_to_check:
             if os.path.exists(index_path):
+                logger.info(f"Found index.html at: {index_path}")
                 return FileResponse(index_path)
-                
-        return {"error": "Dashboard index.html not found"}
+        
+        logger.error(f"index.html NOT FOUND. Checked: {paths_to_check}")
+        return {"error": "Dashboard index.html not found", "checked_paths": paths_to_check, "cwd": cwd}
     except Exception as e:
+        logger.error(f"Error serving index: {e}")
         return {"error": str(e)}
 
 # Enable CORS
@@ -101,17 +110,24 @@ app.add_middleware(
 # Database Configuration
 MONGODB_URI = os.getenv("MONGODB_URI")
 if MONGODB_URI:
-    client = MongoClient(MONGODB_URI)
-    db_conn = client.get_database("drugdetect_db")
-    posts_col = db_conn.posts
-    alerts_col = db_conn.alerts
-    logger.info("Connected to MongoDB")
+    try:
+        # Added 5s timeout to prevent startup hang if DB is unreachable
+        client = MongoClient(MONGODB_URI, serverSelectionTimeoutMS=5000)
+        # Trigger a quick check
+        client.admin.command('ping')
+        db_conn = client.get_database("drugdetect_db")
+        posts_col = db_conn.posts
+        alerts_col = db_conn.alerts
+        logger.info("Successfully connected to MongoDB")
+    except Exception as e:
+        logger.error(f"MongoDB Connection Failed: {e}")
+        posts_col = None
+        alerts_col = None
 else:
     db_memory = {"posts": [], "alerts": []}
     posts_col = None
     alerts_col = None
-    logger.warning("!!! RUNNING IN IN-MEMORY STORAGE MODE (DATABASE NOT CONNECTED) !!!")
-    logger.info("Data will be LOST when the service restarts.")
+    logger.warning("!!! RUNNING IN IN-MEMORY STORAGE MODE !!!")
 
 @app.get("/health")
 async def health_check():
